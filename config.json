@@ -1,0 +1,23 @@
+{
+  "default_model": "gpt-4",
+  "default_slides": 20,
+  "default_theme": "default",
+  "output_directory": "output/",
+  "templates": {
+    "academic": {
+      "theme": "serif",
+      "transition": "fade",
+      "code_line_numbers": true
+    },
+    "business": {
+      "theme": "simple",
+      "transition": "slide",
+      "incremental": true
+    },
+    "technical": {
+      "theme": "dark",
+      "transition": "convex",
+      "chalkboard": true
+    }
+  }
+}

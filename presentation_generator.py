@@ -17,6 +17,8 @@ import argparse
 
 # Import actual LLM clients
 from llm_clients import LangChainLLMClient
+# Import prompt management
+from prompts.prompt_manager import get_structure_prompt, get_slide_content_prompt, prompt_manager
 
 
 def create_llm_client(model: str = "gpt-4") -> object:
@@ -124,8 +126,7 @@ class QuartoGenerator:
     def _load_quarto_reference(self) -> str:
         """Load the Quarto reference template"""
         try:
-            with open('prompt_template.md', 'r', encoding='utf-8') as f:
-                return f.read()
+            return prompt_manager.get_quarto_template()
         except FileNotFoundError:
             # Fallback minimal reference
             return """
@@ -153,39 +154,7 @@ class QuartoGenerator:
     def generate_structure(self, article_content: str, num_slides: int = 20) -> Dict:
         """Generate the general structure of the presentation"""
         
-        structure_prompt = f"""
-        Based on the following article, create a general structure for a Quarto RevealJS presentation with exactly {num_slides} slides.
-
-        ARTICLE CONTENT:
-        {article_content[:5000]}  # Limit content to avoid token limits
-        
-        INSTRUCTIONS:
-        1. Analyze the article and identify the main themes and concepts
-        2. Create a logical flow for a {num_slides}-slide presentation
-        3. Include an introduction, main content sections, and conclusion
-        4. For each slide, specify: slide_number, title, type (intro/content/conclusion), and key_points
-        
-        Return ONLY a valid JSON object (no markdown formatting, no code blocks) with this exact structure:
-        {{
-            "title": "Presentation Title",
-            "slides": [
-                {{
-                    "slide_number": 1,
-                    "title": "Slide Title",
-                    "type": "intro",
-                    "key_points": ["point1", "point2", "point3"]
-                }},
-                {{
-                    "slide_number": 2,
-                    "title": "Another Slide",
-                    "type": "content",
-                    "key_points": ["point1", "point2"]
-                }}
-            ]
-        }}
-        
-        Make sure to include exactly {num_slides} slides. Return only the JSON, no other text.
-        """
+        structure_prompt = get_structure_prompt(article_content, num_slides)
         
         print(f"📋 Generating presentation structure...")
         response = self.llm_client.generate_response(structure_prompt)
@@ -228,34 +197,15 @@ class QuartoGenerator:
     def generate_slide_content(self, article_content: str, structure: Dict, slide_info: Dict) -> str:
         """Generate content for a specific slide"""
         
-        slide_prompt = f"""
-        Generate the content for slide {slide_info['slide_number']} of a Quarto RevealJS presentation.
-        
-        ARTICLE CONTENT:
-        {article_content[:3000]}  # Limit to avoid token limits
-        
-        PRESENTATION STRUCTURE:
-        {json.dumps(structure, indent=2)}
-        
-        CURRENT SLIDE INFO:
-        - Number: {slide_info['slide_number']}
-        - Title: {slide_info['title']}
-        - Type: {slide_info['type']}
-        - Key Points: {slide_info['key_points']}
-        
-        QUARTO REFERENCE:
-        {self.quarto_reference[:2000]}  # Limit reference length
-        
-        INSTRUCTIONS:
-        1. Create slide content using proper Quarto markdown syntax
-        2. Include the slide title as a ## header
-        3. Use bullet points, code blocks, or other appropriate formatting
-        4. Keep content concise and focused on the key points
-        5. Make sure the content relates to the article and fits the overall structure
-        6. Use RevealJS features like incremental lists, columns, or backgrounds when appropriate
-        
-        Generate ONLY the slide content (starting with ##), no additional text or explanations.
-        """
+        slide_prompt = get_slide_content_prompt(
+            article_content=article_content,
+            structure=json.dumps(structure, indent=2),
+            slide_number=slide_info['slide_number'],
+            slide_title=slide_info['title'],
+            slide_type=slide_info['type'],
+            key_points=slide_info['key_points'],
+            quarto_reference=self.quarto_reference
+        )
         
         print(f"🎨 Generating content for slide {slide_info['slide_number']}: {slide_info['title']}")
         content = self.llm_client.generate_response(slide_prompt)

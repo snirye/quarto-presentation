@@ -13,6 +13,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_ollama import ChatOllama
 from langchain_core.messages import SystemMessage, HumanMessage
+from prompts.prompt_manager import get_system_prompt
 
 load_dotenv()
 
@@ -23,7 +24,7 @@ class LangChainLLMClient:
     def __init__(self, model: str = "gpt-4"):
         self.model = model
         self.client = self._create_client(model)
-        self.system_prompt = "You are an expert presentation designer specializing in educational content and Quarto RevealJS presentations."
+        self.system_prompt = get_system_prompt()
 
     def _create_client(self, model: str) -> BaseChatModel:
         """Create appropriate LangChain chat model based on model name"""

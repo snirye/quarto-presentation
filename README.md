@@ -9,6 +9,25 @@ A Python script that automatically generates Quarto RevealJS presentations from 
 - 🎨 **Content Generation**: Generates detailed slide content for each slide
 - 📊 **Quarto Integration**: Outputs properly formatted .qmd files
 - ⚙️ **Customizable**: Adjustable slide count and output options
+- 🎯 **Organized Prompts**: Centralized prompt management system
+
+## Project Structure
+
+```
+quarto_ai/
+├── presentation_generator.py      # Main generator script
+├── llm_clients.py                # LLM client integrations
+├── prompts/                      # Centralized prompt management
+│   ├── system_prompt.md         # AI assistant role definition
+│   ├── structure_generation_prompt.md  # Presentation structure template
+│   ├── slide_content_generation_prompt.md  # Slide content template
+│   ├── quarto_generation_template.md   # Complete Quarto guide
+│   ├── prompt_manager.py        # Prompt loading utility
+│   └── README.md               # Prompt documentation
+├── out/                        # Generated presentations
+├── demo_presentation.qmd       # Reference example
+└── requirements.txt           # Python dependencies
+```
 
 ## Setup
 
@@ -27,58 +46,37 @@ A Python script that automatically generates Quarto RevealJS presentations from 
    pip install -r requirements.txt
    ```
 
-2. **Set up your LLM API key** (choose one):
+2. **Set up your LLM API keys** (choose the providers you want to use):
    
-   **Option A: Environment variable**
    ```bash
-   export OPENAI_API_KEY="your-api-key-here"
+   # OpenAI
+   export OPENAI_API_KEY="your-openai-key-here"
+   
+   # Anthropic Claude
+   export ANTHROPIC_API_KEY="your-anthropic-key-here"
    ```
    
-   **Option B: .env file**
+   **Or use a .env file:**
    ```bash
-   echo "OPENAI_API_KEY=your-api-key-here" > .env
+   echo "OPENAI_API_KEY=your-openai-key-here" > .env
+   echo "ANTHROPIC_API_KEY=your-anthropic-key-here" >> .env
    ```
 
-### LLM Integration Setup
+### Supported LLM Providers
 
-The current script includes a placeholder `LLMClient` class. To use with real LLMs:
+The system now uses **LangChain** for unified LLM integration:
 
-#### OpenAI Integration
-```python
-import openai
+#### OpenAI Models
+- `gpt-4`, `gpt-3.5-turbo`
+- Requires: `OPENAI_API_KEY`
 
-class LLMClient:
-    def __init__(self, api_key: str = None, model: str = "gpt-4"):
-        self.client = openai.OpenAI(api_key=api_key)
-        self.model = model
-    
-    def generate_response(self, prompt: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000,
-            temperature=0.7
-        )
-        return response.choices[0].message.content
-```
+#### Anthropic Claude Models  
+- `claude-3-sonnet-20240229`, `claude-3-haiku-20240307`
+- Requires: `ANTHROPIC_API_KEY`
 
-#### Anthropic Claude Integration
-```python
-import anthropic
-
-class LLMClient:
-    def __init__(self, api_key: str = None, model: str = "claude-3-sonnet-20240229"):
-        self.client = anthropic.Anthropic(api_key=api_key)
-        self.model = model
-    
-    def generate_response(self, prompt: str) -> str:
-        response = self.client.messages.create(
-            model=self.model,
-            max_tokens=2000,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
-```
+#### Local Models (via Ollama)
+- `llama2`, `codellama`, `mixtral`, etc.
+- Requires: Ollama installation (no API key needed)
 
 ## Usage
 
@@ -149,6 +147,39 @@ format:
 ...
 ```
 
+## Prompt Management System
+
+The project now features a centralized prompt management system in the `prompts/` directory:
+
+### Available Prompts
+
+- **`system_prompt.md`** - Defines the AI assistant's role and expertise
+- **`structure_generation_prompt.md`** - Template for creating presentation structure
+- **`slide_content_generation_prompt.md`** - Template for generating slide content  
+- **`quarto_generation_template.md`** - Complete Quarto RevealJS reference guide
+
+### Customizing Prompts
+
+1. **Edit prompt files directly** in the `prompts/` directory
+2. **No restart required** - changes are loaded automatically
+3. **Use template variables** for dynamic content:
+
+```markdown
+Generate content for slide {slide_number}.
+Article: {article_content}
+Structure: {structure}
+```
+
+### Using the Prompt Manager
+
+```python
+from prompts.prompt_manager import PromptManager
+
+pm = PromptManager()
+system_prompt = pm.get_system_prompt()
+custom_prompt = pm.load_prompt("my_custom_prompt")
+```
+
 ## Rendering the Presentation
 
 After generating the .qmd file:
@@ -163,12 +194,14 @@ quarto preview generated_presentation.qmd
 
 ## Customization
 
-### Modifying the LLM Prompts
+### Modifying Prompts
 
-Edit the prompt templates in `presentation_generator.py`:
+All prompts are now in the `prompts/` directory for easy editing:
 
-- **Structure prompt**: `generate_structure()` method
-- **Slide content prompt**: `generate_slide_content()` method
+1. Navigate to `prompts/` directory
+2. Edit the relevant `.md` file
+3. Test changes by running the generator
+4. See `prompts/README.md` for detailed documentation
 
 ### Changing Output Format
 
@@ -184,27 +217,26 @@ Extend the slide generation logic to handle special slide types:
 ```python
 def generate_special_slide(self, slide_type: str, content: str) -> str:
     if slide_type == "code_demo":
-        return self._generate_code_demo_slide(content)
-    elif slide_type == "image_gallery":
-        return self._generate_image_gallery_slide(content)
-    # Add more custom types
-```
-
 ## Troubleshooting
 
 ### Common Issues
 
 1. **API Key not found**
    ```
-   Solution: Set OPENAI_API_KEY environment variable or create .env file
+   Solution: Set appropriate API key environment variable (OPENAI_API_KEY, ANTHROPIC_API_KEY)
    ```
 
-2. **JSON parsing errors**
+2. **Prompt loading errors**
    ```
-   Solution: Check LLM response format, may need to adjust prompts
+   Solution: Ensure all prompt files exist in the prompts/ directory
    ```
 
-3. **Quarto rendering fails**
+3. **JSON parsing errors**
+   ```
+   Solution: Check LLM response format, may need to adjust structure generation prompt
+   ```
+
+4. **Quarto rendering fails**
    ```
    Solution: Verify Quarto installation and .qmd syntax
    ```
@@ -222,7 +254,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 The repository includes sample files:
 - `sample_healthcare_article.txt` - Example input article
-- `prompt_template.md` - Quarto formatting reference
+- `demo_presentation.qmd` - Comprehensive example presentation
+- `prompts/quarto_generation_template.md` - Complete formatting reference
 
 Try the sample:
 ```bash
@@ -234,7 +267,8 @@ python presentation_generator.py sample_healthcare_article.txt --slides 15
 To extend the script:
 1. Fork the repository
 2. Add new features or improvements
-3. Test with different article types
+3. Update prompts in the `prompts/` directory as needed
+4. Test with different article types and models
 4. Submit pull request
 
 ## License

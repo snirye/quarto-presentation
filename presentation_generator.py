@@ -16,49 +16,25 @@ from datetime import datetime
 import argparse
 
 # Import actual LLM clients
-from llm_clients import OpenAIClient, AnthropicClient, LocalLLMClient
+from llm_clients import LangChainLLMClient
 
 
 def create_llm_client(model: str = "gpt-4") -> object:
     """
-    Create appropriate LLM client based on model name and available API keys
+    Create unified LLM client using LangChain framework
     
     Args:
         model: The model name (e.g., "gpt-4", "claude-3-sonnet-20240229", "llama2")
     
     Returns:
-        Appropriate LLM client instance
+        LangChainLLMClient instance
     """
-    # OpenAI models
-    if model.startswith(("gpt-", "text-")) or model in ["gpt-4", "gpt-3.5-turbo"]:
-        try:
-            return OpenAIClient(model=model)
-        except (ImportError, ValueError) as e:
-            print(f"⚠️ OpenAI client unavailable: {e}")
-            
-    # Anthropic Claude models
-    elif model.startswith("claude-"):
-        try:
-            return AnthropicClient(model=model)
-        except (ImportError, ValueError) as e:
-            print(f"⚠️ Anthropic client unavailable: {e}")
-            
-    # Local models (Ollama, LM Studio, etc.)
-    else:
-        try:
-            # Test if local LLM is available before creating client
-            import requests
-            test_response = requests.get("http://localhost:11434/api/tags", timeout=2)
-            if test_response.status_code == 200:
-                return LocalLLMClient(model=model)
-            else:
-                raise ConnectionError("Local LLM server not responding")
-        except Exception as e:
-            print(f"⚠️ Local LLM client unavailable: {e}")
-    
-    # Fallback to a basic client if all else fails
-    print("⚠️ Falling back to placeholder client - API responses will be simulated")
-    return PlaceholderLLMClient(model=model)
+    try:
+        return LangChainLLMClient(model=model)
+    except (ImportError, ValueError) as e:
+        print(f"⚠️ LangChain LLM client unavailable: {e}")
+        print("⚠️ Falling back to placeholder client - API responses will be simulated")
+        return PlaceholderLLMClient(model=model)
 
 
 class PlaceholderLLMClient:

@@ -190,10 +190,10 @@ def main():
     
     if Config.setup_environment():
         Config.create_sample_files()
-        
+
         print("\n🎉 Setup complete! Ready to generate presentations.")
         print("\nQuick start:")
-        print("  python presentation_generator.py sample_healthcare_article.txt")
+        print("  python presentation_generator.py your_article.txt")
         print("\nFor help:")
         print("  python presentation_generator.py --help")
     else:

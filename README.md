@@ -25,7 +25,7 @@ quarto_ai/
 │   ├── prompt_manager.py        # Prompt loading utility
 │   └── README.md               # Prompt documentation
 ├── out/                        # Generated presentations
-├── demo_presentation.qmd       # Reference example
+├── demo_presentation.qmd       # Quarto-provided example 
 └── requirements.txt           # Python dependencies
 ```
 
@@ -82,7 +82,7 @@ The system now uses **LangChain** for unified LLM integration:
 
 ### Basic Usage
 ```bash
-python presentation_generator.py sample_healthcare_article.txt
+python presentation_generator.py your_article.txt
 ```
 
 ### Advanced Usage
@@ -252,14 +252,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 ## Examples
 
-The repository includes sample files:
-- `sample_healthcare_article.txt` - Example input article
-- `demo_presentation.qmd` - Comprehensive example presentation
-- `prompts/quarto_generation_template.md` - Complete formatting reference
+The repository includes a demo presentation generator and prompt templates. Provide your own article text file as input (plain .txt) to generate a Quarto presentation.
 
-Try the sample:
+Example usage:
 ```bash
-python presentation_generator.py sample_healthcare_article.txt --slides 15
+python presentation_generator.py your_article.txt --slides 15
 ```
 
 ## Contributing

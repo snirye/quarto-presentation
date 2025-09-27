@@ -30,14 +30,13 @@ class LangChainLLMClient:
         """Create appropriate LangChain chat model based on model name"""
 
         # OpenAI models
-        if model.startswith(("gpt-", "text-")) or model in ["gpt-4", "gpt-3.5-turbo"]:
+        if model.startswith(("gpt-", "text-")) or model in ["gpt-4", "gpt-3.5-turbo", "o3-mini"]:
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OpenAI API key required. Set OPENAI_API_KEY environment variable.")
             return ChatOpenAI(
                 model=model,
                 api_key=api_key,
-                temperature=0.7,
                 max_tokens=2000
             )
 

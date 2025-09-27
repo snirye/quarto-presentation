@@ -6,18 +6,18 @@ You are an expert technical writer and presentation designer specializing in cre
 Create a comprehensive Quarto markdown presentation file that follows best practices for structure, content organization, and visual design using the RevealJS format.
 
 ## Reference Materials
-You have access to `demo_presentation.qmd` - a comprehensive example showcasing advanced Quarto RevealJS features. Use this as your primary reference for:
+The examples below showcase advanced Quarto RevealJS features that you should incorporate:
 - YAML configuration patterns
 - Advanced slide layouts and transitions
 - Interactive elements implementation
 - Code block formatting and options
 - Visual design patterns and best practices
 
-**Key Principle**: Follow the patterns and techniques demonstrated in the demo presentation while adapting content to your specific topic.
+**Key Principle**: Follow these patterns and techniques while adapting content to your specific topic.
 
 ## YAML Front Matter Template
 
-Reference the demo presentation's YAML header as your foundation. Essential elements include:
+Use this comprehensive YAML header as your foundation:
 
 ```yaml
 ---
@@ -25,7 +25,7 @@ title: "Compelling and Descriptive Title"
 subtitle: "Optional subtitle for additional context"
 format:
   revealjs: 
-    # Core presentation settings - see demo for advanced options
+    # Core presentation settings
     slide-number: true
     chalkboard: 
       buttons: false
@@ -34,7 +34,7 @@ format:
     css: styles.css
     footer: '[Footer text or link](URL)'
     
-    # Commonly used options
+    # Visual and interaction options
     theme: [default|dark|moon|sky|etc]
     transition: [slide|fade|none|convex|concave|zoom]
     incremental: [true|false]
@@ -58,8 +58,6 @@ execute:
 ---
 ```
 
-**See demo presentation for**: Complete YAML configuration with all available options.
-
 ## Content Structure Guidelines
 
 Follow this proven presentation structure:
@@ -77,30 +75,35 @@ Follow this proven presentation structure:
    - Resources/Next steps
    - Q&A invitation
 
-**Reference patterns from demo**: Notice how the demo uses section breaks, varied slide types, and progressive complexity.
+**Reference patterns**: Notice how slides use section breaks, varied slide types, and progressive complexity.
 
 ## Essential Slide Patterns and Layouts
 
 ### Core Principles
 - Use `#` for major section dividers, `##` for individual slides
-- Follow the "6x6 rule": maximum 6 bullet points with 6 words each
+- Follow the "3-5 rule": maximum 3-5 bullet points with concise text
+- ALWAYS use background colors, incremental lists, fragments, and transitions
+- Include speaker notes for every slide with substantive content
 - Balance text, visuals, and interactive elements
 
-### Key Layout Patterns (Reference Demo Examples)
+### Key Layout Patterns (Concrete Examples)
 
-**Multi-column layouts** (see demo "Column Layout" slide):
+**Multi-column layouts**:
 ```markdown
 ::: columns
 ::: {.column width="40%"}
-Left content
+#### Motor Trend Car Road Tests
+The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles.
 :::
 ::: {.column width="60%"}
-Right content
+```{r}
+knitr::kable(head(mtcars)[,c("mpg", "cyl", "disp", "hp", "wt")])
+```
 :::
 :::
 ```
 
-**Incremental reveals** (see demo "Incremental Lists" slide):
+**Incremental reveals** (REQUIRED - use for every content slide):
 ```markdown
 ::: incremental
 - Point 1
@@ -109,47 +112,93 @@ Right content
 :::
 ```
 
-**Content pauses** (see demo "Fragments" slide):
+**Content pauses and fragments** (use for dramatic effect):
 ```markdown
 Content before pause
 
 . . .
 
 Content after pause
-```
 
-**Tabsets for organized content** (see demo "Tabsets" slide):
-```markdown
-::: panel-tabset
-### Tab 1
-Content here
-
-### Tab 2
-More content
+::: {.fragment .fade-in}
+This content fades in
 :::
 ```
 
-**Speaker notes** (not visible in demo but essential):
+**Background colors** (REQUIRED - use on every slide):
+```markdown
+## Title {background-color="lightblue"}
+## Title {background-color="lightgreen"}  
+## Title {background-color="lightyellow"}
+```
+
+**Slide transitions** (set different transitions for variety):
+```markdown
+## Title {transition="slide"}
+## Title {transition="fade"}
+## Title {transition="convex"}
+```
+
+**Tabsets for organized content**:
+```markdown
+::: panel-tabset
+### Plot
+```{r}
+library(ggplot2)
+ggplot(mtcars, aes(hp, mpg, color = am)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "loess")
+```
+
+### Data
+```{r}
+knitr::kable(mtcars)
+```
+:::
+```
+
+**Speaker notes** (REQUIRED for every content slide):
 ```markdown
 ::: notes
-Private speaker notes here
+Private speaker notes here - include:
+- Key talking points and explanations
+- Examples and anecdotes to share
+- Timing guidance and transitions
+- Important details not on the slide
 :::
 ```
 
 ## Code Integration Best Practices
 
 ### Code Block Configuration
-**Reference demo examples**: "Pretty Code", "Code Animations", "Line Highlighting", "Executable Code" slides
+**Concrete examples with progressive features**:
 
+**Basic executable code**:
 ```markdown
-```{python}
+```{r}
 #| echo: true
-#| eval: true
-#| code-line-numbers: "2-4|7|10"
 #| fig-width: 10
 #| fig-height: 4.5
+library(ggplot2)
+ggplot(mtcars, aes(hp, mpg, color = am)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "loess")
+```
+```
 
-# Your code here
+**Line highlighting example**:
+```markdown
+``` {.python code-line-numbers="4-5|7|10"}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
 ```
 ```
 
@@ -160,46 +209,60 @@ Private speaker notes here
 - `#| output-location: [fragment|slide|column]` - Control output placement
 - `#| fig-width: 10` and `#| fig-height: 6` - Control figure dimensions
 
-**Study the demo's "Executable Code" slide** for a complete example of R code integration with ggplot2.
+**Study this complete example** for R code integration with ggplot2 and interactive features.
 
 ## Advanced Features Reference
 
 ### Slide Backgrounds and Visual Enhancement
-**Examples from demo**: "Slide Backgrounds", "Media Backgrounds", "Auto-Animate" slides
+**Concrete examples**:
 ```markdown
+## Slide Backgrounds {background="#43464B"}
+## Media Backgrounds {background-image="images/milky-way.jpeg"}
 ## Title {background-color="aquamarine"}
-## Title {background-image="path/to/image.jpg"}
-## Title {background-video="path/to/video.mp4" background-video-loop="true"}
+## Video Background {background-video="path/to/video.mp4" background-video-loop="true"}
 ```
 
 ### Slide-Specific Classes and Modifiers
-- `{.smaller}` - Reduce font size (see demo "Column Layout" slide)
-- `{.scrollable}` - Enable scrolling (see demo "Tabsets" slide) 
-- `{auto-animate="true"}` - Enable auto-animation (see demo "Auto-Animate" slides)
+- `{.smaller}` - Reduce font size for content-rich slides
+- `{.scrollable}` - Enable scrolling for long content
+- `{auto-animate="true"}` - Enable auto-animation between slides
 - `{transition="slide"}` - Override default transition
 
 ### Content Positioning and Animation
-**Absolute positioning** (see demo "Absolute Position" slide):
+**Absolute positioning example**:
 ```markdown
 ![](image.jpg){.absolute top="170" left="30" width="400"}
+![](another.jpg){.absolute .fragment top="150" right="80" width="450"}
 ```
 
-**Fragments and animations** (see demo "Fragments" slide):
+**Fragment animations with examples**:
 ```markdown
 ::: {.fragment .fade-in}
 Fade in content
 :::
 
+::: {.fragment .fade-up}
+Slide up while fading in
+:::
+
 ::: {.fragment .highlight-red}
-Highlight content
+Highlight content in red
+:::
+
+::: {.fragment .strike}
+Strike through text
 :::
 ```
 
 ### Footer and Navigation
-**Per-slide footer** (see examples throughout demo):
+**Per-slide footer examples**:
 ```markdown
 ::: footer
 Custom footer text or [links](URL)
+:::
+
+::: footer
+Learn more: [Syntax Highlighting](https://quarto.org/docs/output-formats/html-code.html#highlighting)
 :::
 ```
 
@@ -207,47 +270,49 @@ Custom footer text or [links](URL)
 
 When creating content for a specific topic:
 
-1. **Follow demo patterns**: Use the demo's variety of slide types as templates
+1. **Follow established patterns**: Use the variety of slide types shown in examples above
 2. **Progressive complexity**: Start simple, build to advanced concepts
 3. **Mix content types**: Balance text, code, visuals, and interactive elements
 4. **Engage with interactivity**: Use fragments, tabsets, and incremental reveals
-5. **Consider presentation flow**: Study how the demo transitions between concepts
+5. **Consider presentation flow**: Create smooth transitions between concepts
 
 ## Quality Checklist
 
 **Technical Requirements**:
-- [ ] YAML header matches demo sophistication level
+- [ ] YAML header with comprehensive RevealJS settings
 - [ ] Proper markdown syntax and heading hierarchy  
 - [ ] Code blocks with appropriate execution options
-- [ ] Consistent with demo's visual and structural patterns
+- [ ] Consistent visual and structural patterns
 
 **Content Excellence**:
 - [ ] Clear learning progression (intro → content → conclusion)
 - [ ] Balanced slide types (reference demo variety)
-- [ ] Strategic use of interactive elements
+- [ ] Strategic use of interactive elements (incremental lists, fragments, transitions)
+- [ ] Background colors on every slide for visual appeal
+- [ ] Speaker notes for all substantive content slides
+- [ ] Maximum 3-5 bullet points per slide
 - [ ] Professional language and formatting
-- [ ] Speaker notes for complex slides
 
 ## Usage Instructions
 
 To generate a presentation using this template:
 
-1. **Reference the demo**: Always study `demo_presentation.qmd` first to understand the full range of possibilities
+1. **Reference the examples**: Study the patterns and examples provided above
 2. **Specify requirements clearly**:
    - Topic and target audience level
    - Presentation duration and context
    - Required elements (code examples, interactivity, etc.)
-3. **Request demo-inspired features**: Ask for specific patterns you see in the demo
-4. **Iterate based on demo patterns**: Use the demo as a reference for refinement
+3. **Request specific features**: Ask for particular patterns shown in examples
+4. **Iterate based on patterns**: Use the examples as a reference for refinement
 
 **Example request:**
-> "Create a .qmd presentation about 'Machine Learning Fundamentals' for data science beginners, following the patterns shown in the demo presentation. Include progressive code examples, interactive tabsets for different algorithms, and use similar visual styling and transitions as the demo. Make it a 30-minute workshop format."
+> "Create a .qmd presentation about 'Machine Learning Fundamentals' for data science beginners, following the patterns shown in the examples. Include progressive code examples, interactive tabsets for different algorithms, and use background colors and transitions as shown. Make it a 30-minute workshop format with speaker notes."
 
 **Key Success Factors:**
-- Leverage demo presentation as primary reference
-- Balance content types like the demo does
+- Leverage concrete examples as primary reference
+- Balance content types as shown in examples
 - Use interactive features strategically
 - Maintain professional visual design
 - Include speaker notes for complex concepts
 
-The demo presentation serves as your comprehensive style guide and feature showcase - use it liberally as a reference for creating engaging, professional presentations that match its quality and sophistication.
+These examples serve as your comprehensive style guide and feature showcase - use them as concrete references for creating engaging, professional presentations that match their quality and sophistication.

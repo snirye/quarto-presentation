@@ -96,8 +96,8 @@ class PromptManager:
         template = self.load_prompt("slide_content_generation_prompt")
         
         # Limit content lengths to avoid token limits
-        limited_content = article_content[:3000]
-        limited_reference = quarto_reference[:2000]
+        limited_content = article_content
+        limited_reference = quarto_reference
         
         return template.format(
             article_content=limited_content,

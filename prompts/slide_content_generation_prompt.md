@@ -1,26 +1,36 @@
-Generate the content for slide {slide_number} of a Quarto RevealJS presentation.
+<INSTRUCTIONS>
+1. Create slide content using proper Quarto markdown syntax with a `##` header.
+2. CONTENT LIMITS: Maximum 3-5 bullet points per slide. Keep bullets to 8-10 words each.
+3. VISUAL ENHANCEMENTS: Include one or more of the following when appropriate:
+   - Background colors: use `{{background-color="lightblue"}}` (or similar).
+   - Incremental lists: wrap bullets in `::: incremental` / `:::`.
+   - Content fragments: use `. . .` or `::: {{.fragment}}` blocks for staged reveals.
+   - Slide transitions: add `{{transition="slide"}}` or `{{transition="fade"}}` to the slide header.
+4. SPEAKER NOTES: Always include detailed speaker notes using `::: notes` blocks.
+5. Focus on the top-level insights from the provided key points and avoid adding unrelated content.
+6. Output must start with a `##` slide header and contain only the slide content and notes.
+</INSTRUCTIONS>
 
-ARTICLE CONTENT:
+<CONTEXT>
+<ARTICLE_CONTENT>
 {article_content}
+</ARTICLE_CONTENT>
 
-PRESENTATION STRUCTURE:
+<PRESENTATION_STRUCTURE>
 {structure}
+</PRESENTATION_STRUCTURE>
 
-CURRENT SLIDE INFO:
-- Number: {slide_number}
-- Title: {slide_title}
-- Type: {slide_type}
-- Key Points: {key_points}
+<CURRENT_SLIDE>
+<NUMBER>{slide_number}</NUMBER>
+<TITLE>{slide_title}</TITLE>
+<TYPE>{slide_type}</TYPE>
+<KEY_POINTS>{key_points}</KEY_POINTS>
+</CURRENT_SLIDE>
 
-QUARTO REFERENCE:
+<QUARTO_REFERENCE>
 {quarto_reference}
+</QUARTO_REFERENCE>
 
-INSTRUCTIONS:
-1. Create slide content using proper Quarto markdown syntax
-2. Include the slide title as a ## header
-3. Use bullet points, code blocks, or other appropriate formatting
-4. Keep content concise and focused on the key points
-5. Make sure the content relates to the article and fits the overall structure
-6. Use RevealJS features like incremental lists, columns, or backgrounds when appropriate
-
-Generate ONLY the slide content (starting with ##), no additional text or explanations.
+<OUTPUT_RULES>
+Generate ONLY the slide content (starting with `##`) and the speaker notes block. No additional text, explanation, or metadata.
+</OUTPUT_RULES>
